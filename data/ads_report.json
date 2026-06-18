@@ -1,0 +1,516 @@
+{
+    "timestamp": "2026-06-14T14:32:18.599446",
+    "filename": "Sponsored_Products_Te\u0301rmino_de_bu\u0301squeda_Reportar.xlsx",
+    "total_spend": 3042.89,
+    "total_sales": 8915.94,
+    "total_clicks": 158,
+    "total_orders": 14,
+    "total_impressions": 5681,
+    "daily_ads": {
+        "2026-06-02": {
+            "spend": 47.199999999999996,
+            "sales": 0.0,
+            "clicks": 4,
+            "orders": 0,
+            "impressions": 14
+        },
+        "2026-06-01": {
+            "spend": 115.93,
+            "sales": 0.0,
+            "clicks": 6,
+            "orders": 0,
+            "impressions": 13
+        },
+        "2026-05-05": {
+            "spend": 1099.0700000000002,
+            "sales": 0.0,
+            "clicks": 58,
+            "orders": 0,
+            "impressions": 4933
+        },
+        "2026-05-11": {
+            "spend": 81.15,
+            "sales": 0.0,
+            "clicks": 4,
+            "orders": 0,
+            "impressions": 11
+        },
+        "2026-05-06": {
+            "spend": 83.28,
+            "sales": 0.0,
+            "clicks": 9,
+            "orders": 0,
+            "impressions": 120
+        },
+        "2026-05-12": {
+            "spend": 58.82,
+            "sales": 0.0,
+            "clicks": 3,
+            "orders": 0,
+            "impressions": 110
+        },
+        "2026-05-10": {
+            "spend": 313.85,
+            "sales": 0.0,
+            "clicks": 14,
+            "orders": 0,
+            "impressions": 101
+        },
+        "2026-05-24": {
+            "spend": 44.43000000000001,
+            "sales": 0.0,
+            "clicks": 2,
+            "orders": 0,
+            "impressions": 3
+        },
+        "2026-06-03": {
+            "spend": 388.18000000000006,
+            "sales": 0.0,
+            "clicks": 11,
+            "orders": 0,
+            "impressions": 24
+        },
+        "2026-05-31": {
+            "spend": 104.4,
+            "sales": 0.0,
+            "clicks": 4,
+            "orders": 0,
+            "impressions": 8
+        },
+        "2026-05-15": {
+            "spend": 17.29,
+            "sales": 0.0,
+            "clicks": 2,
+            "orders": 0,
+            "impressions": 4
+        },
+        "2026-05-16": {
+            "spend": 9.02,
+            "sales": 2758.63,
+            "clicks": 5,
+            "orders": 5,
+            "impressions": 23
+        },
+        "2026-05-21": {
+            "spend": 23.57,
+            "sales": 0.0,
+            "clicks": 3,
+            "orders": 0,
+            "impressions": 3
+        },
+        "2026-05-09": {
+            "spend": 59.92,
+            "sales": 0.0,
+            "clicks": 4,
+            "orders": 0,
+            "impressions": 7
+        },
+        "2026-05-07": {
+            "spend": 260.95,
+            "sales": 4398.68,
+            "clicks": 10,
+            "orders": 6,
+            "impressions": 206
+        },
+        "2026-05-18": {
+            "spend": 7.45,
+            "sales": 0.0,
+            "clicks": 1,
+            "orders": 0,
+            "impressions": 3
+        },
+        "2026-05-08": {
+            "spend": 24.45,
+            "sales": 0.0,
+            "clicks": 2,
+            "orders": 0,
+            "impressions": 3
+        },
+        "2026-05-14": {
+            "spend": 73.3,
+            "sales": 0.0,
+            "clicks": 4,
+            "orders": 0,
+            "impressions": 23
+        },
+        "2026-05-13": {
+            "spend": 50.1,
+            "sales": 0.0,
+            "clicks": 3,
+            "orders": 0,
+            "impressions": 7
+        },
+        "2026-05-30": {
+            "spend": 32.12,
+            "sales": 0.0,
+            "clicks": 2,
+            "orders": 0,
+            "impressions": 4
+        },
+        "2026-05-29": {
+            "spend": 9.8,
+            "sales": 0.0,
+            "clicks": 1,
+            "orders": 0,
+            "impressions": 1
+        },
+        "2026-05-26": {
+            "spend": 17.25,
+            "sales": 0.0,
+            "clicks": 1,
+            "orders": 0,
+            "impressions": 2
+        },
+        "2026-05-27": {
+            "spend": 17.69,
+            "sales": 0.0,
+            "clicks": 1,
+            "orders": 0,
+            "impressions": 32
+        },
+        "2026-05-28": {
+            "spend": 84.75,
+            "sales": 0.0,
+            "clicks": 3,
+            "orders": 0,
+            "impressions": 25
+        },
+        "2026-05-25": {
+            "spend": 18.92,
+            "sales": 1758.63,
+            "clicks": 1,
+            "orders": 3,
+            "impressions": 1
+        }
+    },
+    "campaigns": {
+        "SUPER DIGESTIVE ABRIL": {
+            "spend": 2202.77,
+            "sales": 3004.3100000000004,
+            "clicks": 72,
+            "orders": 5,
+            "impressions": 5130,
+            "daily": {
+                "2026-06-02": {
+                    "spend": 28.05,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 2
+                },
+                "2026-05-06": {
+                    "spend": 22.72,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 17
+                },
+                "2026-05-12": {
+                    "spend": 23.46,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 101
+                },
+                "2026-05-10": {
+                    "spend": 236.17000000000002,
+                    "sales": 0.0,
+                    "clicks": 6,
+                    "orders": 0,
+                    "impressions": 37
+                },
+                "2026-05-05": {
+                    "spend": 892.1700000000001,
+                    "sales": 0.0,
+                    "clicks": 31,
+                    "orders": 0,
+                    "impressions": 4680
+                },
+                "2026-05-24": {
+                    "spend": 44.43000000000001,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-06-03": {
+                    "spend": 371.12000000000006,
+                    "sales": 0.0,
+                    "clicks": 10,
+                    "orders": 0,
+                    "impressions": 16
+                },
+                "2026-05-31": {
+                    "spend": 80.97,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 5
+                },
+                "2026-05-07": {
+                    "spend": 253.07,
+                    "sales": 1245.68,
+                    "clicks": 6,
+                    "orders": 2,
+                    "impressions": 196
+                },
+                "2026-06-01": {
+                    "spend": 60.230000000000004,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 7
+                },
+                "2026-05-26": {
+                    "spend": 17.25,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 2
+                },
+                "2026-05-27": {
+                    "spend": 17.69,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 32
+                },
+                "2026-05-28": {
+                    "spend": 84.75,
+                    "sales": 0.0,
+                    "clicks": 3,
+                    "orders": 0,
+                    "impressions": 25
+                },
+                "2026-05-30": {
+                    "spend": 22.56,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-05-09": {
+                    "spend": 29.21,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-05-25": {
+                    "spend": 18.92,
+                    "sales": 1758.63,
+                    "clicks": 1,
+                    "orders": 3,
+                    "impressions": 1
+                }
+            }
+        },
+        "AD_READY: B0CKJC1MZZ": {
+            "spend": 549.6,
+            "sales": 3153.0,
+            "clicks": 42,
+            "orders": 4,
+            "impressions": 167,
+            "daily": {
+                "2026-06-01": {
+                    "spend": 47.74,
+                    "sales": 0.0,
+                    "clicks": 3,
+                    "orders": 0,
+                    "impressions": 5
+                },
+                "2026-05-11": {
+                    "spend": 81.15,
+                    "sales": 0.0,
+                    "clicks": 4,
+                    "orders": 0,
+                    "impressions": 11
+                },
+                "2026-05-10": {
+                    "spend": 75.15,
+                    "sales": 0.0,
+                    "clicks": 7,
+                    "orders": 0,
+                    "impressions": 63
+                },
+                "2026-05-09": {
+                    "spend": 23.34,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-06-02": {
+                    "spend": 6.15,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 10
+                },
+                "2026-05-18": {
+                    "spend": 7.45,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-05-08": {
+                    "spend": 24.45,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-05-05": {
+                    "spend": 37.660000000000004,
+                    "sales": 0.0,
+                    "clicks": 3,
+                    "orders": 0,
+                    "impressions": 6
+                },
+                "2026-05-06": {
+                    "spend": 25.21,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 2
+                },
+                "2026-05-14": {
+                    "spend": 73.3,
+                    "sales": 0.0,
+                    "clicks": 4,
+                    "orders": 0,
+                    "impressions": 23
+                },
+                "2026-06-03": {
+                    "spend": 17.06,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 8
+                },
+                "2026-05-12": {
+                    "spend": 35.36,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 9
+                },
+                "2026-05-31": {
+                    "spend": 23.43,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-05-13": {
+                    "spend": 50.1,
+                    "sales": 0.0,
+                    "clicks": 3,
+                    "orders": 0,
+                    "impressions": 7
+                },
+                "2026-05-30": {
+                    "spend": 9.56,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 1
+                },
+                "2026-05-29": {
+                    "spend": 9.8,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 1
+                },
+                "2026-05-07": {
+                    "spend": 2.69,
+                    "sales": 3153.0,
+                    "clicks": 3,
+                    "orders": 4,
+                    "impressions": 9
+                }
+            }
+        },
+        "Campa\u00f1a con ajustes predeterminados: B0CWN13K56 - 28/5/2025 12:59:50.053": {
+            "spend": 290.52,
+            "sales": 2758.63,
+            "clicks": 44,
+            "orders": 5,
+            "impressions": 384,
+            "daily": {
+                "2026-05-05": {
+                    "spend": 169.23999999999998,
+                    "sales": 0.0,
+                    "clicks": 24,
+                    "orders": 0,
+                    "impressions": 247
+                },
+                "2026-05-15": {
+                    "spend": 17.29,
+                    "sales": 0.0,
+                    "clicks": 2,
+                    "orders": 0,
+                    "impressions": 4
+                },
+                "2026-05-16": {
+                    "spend": 9.02,
+                    "sales": 2758.63,
+                    "clicks": 5,
+                    "orders": 5,
+                    "impressions": 23
+                },
+                "2026-05-21": {
+                    "spend": 23.57,
+                    "sales": 0.0,
+                    "clicks": 3,
+                    "orders": 0,
+                    "impressions": 3
+                },
+                "2026-06-02": {
+                    "spend": 13.0,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 2
+                },
+                "2026-05-09": {
+                    "spend": 7.37,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 1
+                },
+                "2026-06-01": {
+                    "spend": 7.96,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 1
+                },
+                "2026-05-07": {
+                    "spend": 5.19,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 1
+                },
+                "2026-05-06": {
+                    "spend": 35.35,
+                    "sales": 0.0,
+                    "clicks": 5,
+                    "orders": 0,
+                    "impressions": 101
+                },
+                "2026-05-10": {
+                    "spend": 2.53,
+                    "sales": 0.0,
+                    "clicks": 1,
+                    "orders": 0,
+                    "impressions": 1
+                }
+            }
+        }
+    }
+}

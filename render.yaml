@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: amazon-ads-optimizer
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: DATABASE_PATH
+        value: ./data/aaoe.db
+      - key: ENCRYPTION_KEY
+        value: N0ZkS1hSU3lVdzJ1N0k5UGJ1V0FjUGt3NktVOW5sV3M3UXhVYzBzRzJZST0=
+      - key: LWA_CLIENT_ID
+        sync: false
+        placeholder: "amzn1.application-oa2-client.xxx..."
+      - key: LWA_CLIENT_SECRET
+        sync: false
+        placeholder: "Secreto de cliente de tu perfil LWA"
+      - key: LWA_REFRESH_TOKEN
+        sync: false
+        placeholder: "Token de actualización (Refresh Token) de Amazon"
+      - key: AMAZON_ADS_PROFILE_ID
+        sync: false
+        placeholder: "ID de tu perfil publicitario de Amazon Ads (opcional)"
+      - key: AMAZON_ADS_REGION
+        value: na

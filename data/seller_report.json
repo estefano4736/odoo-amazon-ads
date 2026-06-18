@@ -1,0 +1,61 @@
+{
+    "timestamp": "2026-06-18T00:56:12.141825",
+    "filename": "SalesDashboard-05-06-26.csv",
+    "total_sales": 178700.92,
+    "total_units": 229,
+    "total_orders": 210,
+    "saldo_total": 0.0,
+    "pending_orders": 0,
+    "buy_box_pct": 1.0,
+    "ventas_promociones": 0.0,
+    "estado_cuenta": "Saludable",
+    "daily_sales": {
+        "Ene": {
+            "sales": 19550.0,
+            "units": 23
+        },
+        "Feb": {
+            "sales": 23640.0,
+            "units": 29
+        },
+        "Marzo": {
+            "sales": 40620.0,
+            "units": 47
+        },
+        "Abril": {
+            "sales": 33468.97,
+            "units": 43
+        },
+        "May": {
+            "sales": 49888.37,
+            "units": 70
+        },
+        "Junio": {
+            "sales": 11533.58,
+            "units": 17
+        }
+    },
+    "products": {
+        "PL-DIG-ENZ-60": {
+            "sales": 116602.35,
+            "units": 151,
+            "asin": "B012345678",
+            "title": "Super Digestive Enzymes (60 Caps)",
+            "category": "Digestivo"
+        },
+        "PL-CV-ALG-OM3": {
+            "sales": 42405.73,
+            "units": 56,
+            "asin": "B087654321",
+            "title": "Pure Alga Omega 3 (120ml)",
+            "category": "Cardiovascular"
+        },
+        "PL-BAL-ADR-90": {
+            "sales": 19692.84,
+            "units": 22,
+            "asin": "B011223344",
+            "title": "Adrenal Health & Cortisol Balance (90 Caps)",
+            "category": "Balance & Estr\u00e9s"
+        }
+    }
+}

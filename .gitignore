@@ -1,0 +1,30 @@
+# Python virtual envs
+.venv/
+.venv_old/
+venv/
+ENV/
+env/
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local environment configuration (contains sensitive keys)
+.env
+
+# Local database file containing encrypted credentials
+data/aaoe.db
+
+# User uploaded reports and optimized output files
+data/uploads/*
+data/outputs/*
+
+# Keep folders in git even if they are empty
+!data/uploads/.gitkeep
+!data/outputs/.gitkeep
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store

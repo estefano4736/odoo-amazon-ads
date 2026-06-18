@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Ads Optimization Engine</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tailwind CSS (Direct CDN) for quick layout, but with custom CSS overriding it for theme styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090a15',
+                        glassBg: 'rgba(17, 19, 40, 0.45)',
+                        glassBorder: 'rgba(255, 255, 255, 0.05)',
+                        accentBlue: '#00e1ff',
+                        accentGreen: '#00ffaa',
+                        accentRed: '#ff3b70',
+                        accentOrange: '#ff8800',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css?v=20260611">
+    <!-- Immediate theme initializer to prevent flash -->
+    <script>
+        (function() {
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem("theme");
+            } catch (e) {
+                console.warn("Theme storage access error:", e);
+            }
+            if (savedTheme !== "dark") {
+                document.documentElement.classList.add("light-theme");
+            }
+        })();
+    </script>
+</head>
+<body class="bg-darkBg text-gray-100 font-sans min-h-screen">
+    <!-- Main glow background decorators -->
+    <div class="fixed top-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-indigo-900/10 blur-[120px] pointer-events-none z-0"></div>
+    <div class="fixed bottom-[-10%] left-[-10%] w-[45vw] h-[45vw] rounded-full bg-blue-950/15 blur-[120px] pointer-events-none z-0"></div>
+
+    <div class="relative z-10 flex flex-col min-h-screen">
+        <!-- Top Navigation Header -->
+        <header class="glass-card border-b border-glassBorder py-4 px-6 sticky top-0 backdrop-blur-xl z-50">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <!-- Logo & Mode Switcher -->
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 bg-gradient-to-tr from-cyan-500 to-indigo-600 rounded-xl shadow-lg shadow-cyan-500/20">
+                            <i data-lucide="zap" class="w-6 h-6 text-white animate-pulse"></i>
+                        </div>
+                        <div>
+                            <h1 class="logo-title font-outfit font-extrabold text-xl bg-gradient-to-r from-white via-cyan-200 to-indigo-200 bg-clip-text text-transparent">AMAZON ADS</h1>
+                            <p class="text-xs text-cyan-400/80 font-semibold tracking-wider uppercase">OPTIMIZATION ENGINE</p>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Mode Switcher -->
+                    <div class="flex p-0.5 bg-white/5 border border-glassBorder rounded-xl gap-0.5">
+                        <button id="btn-mode-seller" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" onclick="setDashboardMode('seller')">
+                            Seller Central
+                        </button>
+                        <button id="btn-mode-kindle" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 text-gray-400 hover:text-gray-200" onclick="setDashboardMode('kindle')">
+                            Kindle (KDP)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Profile and Mode Selectors -->
+                <div class="flex items-center gap-4">
+                    <!-- Status pill -->
+                    <div id="status-mode-pill" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/50 border border-cyan-500/30 text-xs font-semibold text-cyan-400">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span id="mode-text">Cargando modo...</span>
+                    </div>
+
+                    <!-- Profile Selector -->
+                    <div class="relative">
+                        <select id="profile-selector" class="appearance-none bg-glassBg border border-glassBorder px-4 py-2 pr-10 rounded-xl text-sm font-medium focus:outline-none focus:border-cyan-400 cursor-pointer text-gray-200">
+                            <option value="">Cargando Perfiles...</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
+
+                    <!-- Date Range Selector -->
+                    <div class="flex items-center gap-2">
+                        <div class="relative">
+                            <select id="date-range-selector" class="appearance-none bg-glassBg border border-glassBorder px-4 py-2 pr-10 rounded-xl text-sm font-medium focus:outline-none focus:border-cyan-400 cursor-pointer text-gray-200">
+                                <option value="auto" selected>Automático (Según Reporte)</option>
+                                <option value="full_2026">Todo el 2026</option>
+                                <option value="last_30">Últimos 30 días</option>
+                                <option value="last_14">Últimos 14 días</option>
+                                <option value="last_7">Últimos 7 días</option>
+                                <option value="this_month">Este mes</option>
+                                <option value="custom">Rango Personalizado...</option>
+                            </select>
+                            <i data-lucide="calendar" class="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        </div>
+                        
+                        <!-- Custom Dates Container (hidden by default) -->
+                        <div id="custom-date-container" class="hidden flex items-center gap-1.5 bg-glassBg border border-glassBorder p-1 rounded-xl">
+                            <input type="date" id="start-date" class="bg-transparent text-xs text-gray-200 border-none outline-none cursor-pointer p-1 focus:text-cyan-400 font-medium">
+                            <span class="text-gray-400 text-xs">-</span>
+                            <input type="date" id="end-date" class="bg-transparent text-xs text-gray-200 border-none outline-none cursor-pointer p-1 focus:text-cyan-400 font-medium">
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle-btn" class="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all duration-300 group shadow-md" title="Cambiar Tema">
+                        <i id="theme-toggle-icon" data-lucide="sun" class="w-5 h-5 text-gray-300 group-hover:text-cyan-400 transition-all duration-300"></i>
+                    </button>
+
+                    <!-- Credentials Trigger -->
+                    <button onclick="toggleCredentialsPanel(true)" class="p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all duration-300 group shadow-md" title="Configurar LWA API">
+                        <i data-lucide="settings" class="w-5 h-5 text-gray-300 group-hover:text-cyan-400 group-hover:rotate-45 transition-all duration-300"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace Container -->
+        <main class="flex-grow max-w-7xl w-full mx-auto p-6 md:p-8 space-y-8 z-10">
+            <!-- Global Performance Indicators -->
+            <section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+                <!-- Ventas Globales -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-green-500 to-emerald-400"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ventas Globales</p>
+                    <h3 id="metric-global-sales" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">$0.00 MXN</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-emerald-400 font-semibold">
+                        <i data-lucide="globe" class="w-3 h-3"></i>
+                        <span>Orgánicas + Ads</span>
+                    </div>
+                </div>
+
+                <!-- Ventas Patrocinadas -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-cyan-500 to-blue-500"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ventas Patroc.</p>
+                    <h3 id="metric-sales" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">$0.00 MXN</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-blue-400 font-semibold">
+                        <i data-lucide="sparkles" class="w-3 h-3"></i>
+                        <span>Ventas por anuncios</span>
+                    </div>
+                </div>
+
+                <!-- Ventas Orgánicas -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Ventas Orgán.</p>
+                    <h3 id="metric-organic-sales" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">$0.00 MXN</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-teal-400 font-semibold">
+                        <i data-lucide="trending-up" class="w-3 h-3"></i>
+                        <span>Ventas sin anuncios</span>
+                    </div>
+                </div>
+
+                <!-- Inversión (Spend) -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-rose-500 to-orange-500"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Inversión (Spend)</p>
+                    <h3 id="metric-spend" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">$0.00 MXN</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-rose-400 font-semibold">
+                        <i data-lucide="dollar-sign" class="w-3 h-3"></i>
+                        <span>Gasto publicitario</span>
+                    </div>
+                </div>
+
+                <!-- ACOS Promedio -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-purple-500 to-indigo-500"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">ACOS Promedio</p>
+                    <h3 id="metric-acos" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">0.0%</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-cyan-400 font-semibold">
+                        <i data-lucide="target" class="w-3 h-3"></i>
+                        <span id="acos-status">Óptimo</span>
+                    </div>
+                </div>
+
+                <!-- TACOS Promedio -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-yellow-500"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">TACOS Promedio</p>
+                    <h3 id="metric-tacos" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">0.0%</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-amber-400 font-semibold">
+                        <i data-lucide="activity" class="w-3 h-3"></i>
+                        <span>Gasto / Ventas Glob.</span>
+                    </div>
+                </div>
+
+                <!-- ROAS Global -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-fuchsia-500 to-pink-500"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">ROAS Global</p>
+                    <h3 id="metric-roas" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">0.00x</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-fuchsia-400 font-semibold">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                        <span>Multiplicador ventas</span>
+                    </div>
+                </div>
+
+                <!-- Tasa de Conversión -->
+                <div class="glass-card stat-card p-4 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-teal-500 to-emerald-500"></div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Tasa Conv.</p>
+                    <h3 id="metric-conversion" class="font-outfit font-extrabold text-lg mt-1 text-gray-100">0.0%</h3>
+                    <div class="flex items-center gap-1 mt-1 text-[9px] text-teal-400 font-semibold">
+                        <i data-lucide="shopping-cart" class="w-3 h-3"></i>
+                        <span>Conversión de anuncios</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chart Section (Spend & Sales trends) -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Trend line chart -->
+                <div class="glass-card p-6 rounded-2xl lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-outfit font-bold text-lg text-gray-200">Tendencias de Rendimiento</h4>
+                        <span class="text-xs text-gray-400">Últimos 30 días</span>
+                    </div>
+                    <div class="h-[260px] relative">
+                        <canvas id="metrics-trend-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Budget status & distribution -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-outfit font-bold text-lg text-gray-200 mb-4">Distribución de Inversión (Gasto)</h4>
+                        <div class="h-[180px] relative flex justify-center items-center">
+                            <canvas id="budget-doughnut-chart"></canvas>
+                        </div>
+                    </div>
+                    <div id="budget-legend-container" class="mt-4 pt-4 border-t border-glassBorder flex flex-wrap gap-3 justify-between text-xs text-gray-400"></div>
+                </div>
+            </section>
+
+            <!-- Financial Breakdown & Amazon Net Payout Section -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Financial details list -->
+                <div class="glass-card p-6 rounded-2xl lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 id="financial-breakdown-title" class="font-outfit font-bold text-lg text-gray-200 flex items-center gap-2">
+                            <i data-lucide="receipt" class="w-5 h-5 text-emerald-400"></i>
+                            Desglose de Tarifas y Retenciones de Amazon
+                        </h4>
+                        <span class="text-xs text-gray-400">Cálculo estimado en base a ventas brutas</span>
+                    </div>
+                    <div class="space-y-4">
+                        <!-- Venta Bruta -->
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                                <span id="lbl-gross-sales" class="text-sm text-gray-300 font-medium">Ventas Totales (Brutas)</span>
+                            </div>
+                            <span id="financial-gross-sales" class="text-sm font-bold text-gray-100">$0.00 MXN</span>
+                        </div>
+                        <!-- Comisión por Referencia (Referral Fee) -->
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span>
+                                <div>
+                                    <span id="lbl-referral-fee" class="text-sm text-gray-300 font-medium">Comisión de Referencia Amazon (15%)</span>
+                                    <p id="desc-referral-fee" class="text-[10px] text-gray-400">Tarifa fija por categoría</p>
+                                </div>
+                            </div>
+                            <span id="financial-referral-fee" class="text-sm font-bold text-rose-400">-$0.00 MXN</span>
+                        </div>
+                        <!-- Tarifas Logística (FBA Fees) -->
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                                <div>
+                                    <span id="lbl-fba-fee" class="text-sm text-gray-300 font-medium">Tarifas de Logística de Amazon (FBA)</span>
+                                    <p id="desc-fba-fee" class="text-[10px] text-gray-400">Envío, almacenamiento y manejo estimado ($70 MXN por unidad)</p>
+                                </div>
+                            </div>
+                            <span id="financial-fba-fee" class="text-sm font-bold text-rose-400">-$0.00 MXN</span>
+                        </div>
+                        <!-- Retenciones IVA e ISR -->
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+                                <div>
+                                    <span id="lbl-tax-retention" class="text-sm text-gray-300 font-medium">Retenciones de Impuestos (RFC registrado)</span>
+                                    <p id="desc-tax-retention" class="text-[10px] text-gray-400">IVA (8%) + ISR (1%) de ventas brutas</p>
+                                </div>
+                            </div>
+                            <span id="financial-tax-retention" class="text-sm font-bold text-rose-400">-$0.00 MXN</span>
+                        </div>
+                        <!-- Gasto en Publicidad -->
+                        <div class="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                                <div>
+                                    <span id="lbl-ads-spend" class="text-sm text-gray-300 font-medium">Inversión en Campañas Publicitarias (Ads)</span>
+                                    <p id="desc-ads-spend" class="text-[10px] text-gray-400">Costo de clics y anuncios deducido</p>
+                                </div>
+                            </div>
+                            <span id="financial-ads-spend" class="text-sm font-bold text-rose-400">-$0.00 MXN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Net Payout summary -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between border-t-2 border-t-emerald-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="wallet" class="w-5 h-5 text-emerald-400"></i>
+                            <h4 id="financial-payout-title" class="font-outfit font-bold text-lg text-gray-200">Pago Neto Estimado</h4>
+                        </div>
+                        <p id="desc-payout-summary" class="text-xs text-gray-400 leading-relaxed">
+                            Este es el balance estimado transferido a tu cuenta bancaria después de todas las deducciones operativas, retenciones fiscales y gastos publicitarios correspondientes al periodo seleccionado.
+                        </p>
+                    </div>
+                    <div class="mt-8 mb-6 text-center">
+                        <span id="lbl-payout-amount" class="text-xs text-gray-400 block mb-1">Monto a Depositar</span>
+                        <h2 id="financial-net-payout" class="font-outfit font-extrabold text-3xl text-emerald-400 tracking-tight">$0.00 MXN</h2>
+                        <span class="text-[10px] text-gray-500 block mt-2">Valores calculados dinámicamente según filtros de fecha</span>
+                    </div>
+                    <div class="pt-4 border-t border-glassBorder flex items-center gap-2 text-xs text-emerald-400">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span>Datos conciliados al 100%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Performance Breakdown Section with Tabs -->
+            <section class="glass-card p-6 rounded-2xl">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-glassBorder">
+                    <h4 class="font-outfit font-bold text-lg text-gray-200 flex items-center gap-2">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-400"></i>
+                        Análisis de Rendimiento
+                    </h4>
+                    <div class="flex p-1 bg-white/[0.02] border border-glassBorder rounded-xl self-start sm:self-auto">
+                        <button id="btn-tab-products" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" onclick="switchTab('products')">
+                            Productos (SKU)
+                        </button>
+                        <button id="btn-tab-campaigns" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 text-gray-400 hover:text-gray-200" onclick="switchTab('campaigns')">
+                            Campañas (Ads)
+                        </button>
+                        <button id="btn-tab-kindle" class="px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 text-gray-400 hover:text-gray-200" onclick="switchTab('kindle')">
+                            Kindle (KDP)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Table View -->
+                <div id="products-view" class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="products-table">
+                        <thead>
+                            <tr class="text-gray-400 text-xs font-semibold uppercase bg-white/[0.02] border-b border-glassBorder">
+                                <th class="py-3 px-4">SKU</th>
+                                <th class="py-3 px-4">Producto</th>
+                                <th class="py-3 px-4 text-center">Categoría</th>
+                                <th class="py-3 px-4 text-center">Unidades Vendidas</th>
+                                <th class="py-3 px-4 text-center">Clics</th>
+                                <th class="py-3 px-4 text-right">Inversión (Spend)</th>
+                                <th class="py-3 px-4 text-right">Ventas Patroc.</th>
+                                <th class="py-3 px-4 text-right">Ventas Orgán.</th>
+                                <th class="py-3 px-4 text-right">Ventas Glob.</th>
+                                <th class="py-3 px-4 text-center">ACOS</th>
+                                <th class="py-3 px-4 text-center">TACOS</th>
+                                <th class="py-3 px-4 text-center">ROAS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-tbody" class="divide-y divide-glassBorder text-sm">
+                            <tr>
+                                <td colspan="12" class="py-8 text-center text-gray-400">Cargando desglose de productos...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Campaigns Table View -->
+                <div id="campaigns-view" class="overflow-x-auto hidden">
+                    <table class="w-full text-left border-collapse" id="campaigns-table">
+                        <thead>
+                            <tr class="text-gray-400 text-xs font-semibold uppercase bg-white/[0.02] border-b border-glassBorder">
+                                <th class="py-3 px-4">Campaña</th>
+                                <th class="py-3 px-4 text-center">Tipo</th>
+                                <th class="py-3 px-4 text-right">Presupuesto</th>
+                                <th class="py-3 px-4 text-center">Impresiones</th>
+                                <th class="py-3 px-4 text-center">Clics</th>
+                                <th class="py-3 px-4 text-right">Inversión (Spend)</th>
+                                <th class="py-3 px-4 text-center">Pedidos</th>
+                                <th class="py-3 px-4 text-right">Ventas Patroc.</th>
+                                <th class="py-3 px-4 text-center">ACOS</th>
+                                <th class="py-3 px-4 text-center">ROAS</th>
+                                <th class="py-3 px-4 text-center">Tasa Conv.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaigns-tbody" class="divide-y divide-glassBorder text-sm">
+                            <tr>
+                                <td colspan="11" class="py-8 text-center text-gray-400">Cargando desglose de campañas...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Kindle Table View -->
+                <div id="kindle-view" class="space-y-4 hidden">
+                    <!-- Status de Reportes KDP -->
+                    <div class="glass-card p-4 rounded-xl flex flex-col lg:flex-row lg:items-center justify-between gap-4 border border-cyan-500/20 bg-cyan-950/5 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-[4px] h-full bg-cyan-400"></div>
+                        <div class="flex items-start gap-3 pl-2">
+                            <div class="p-2 bg-cyan-500/10 rounded-lg text-cyan-400 border border-cyan-500/20">
+                                <i data-lucide="info" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-gray-200">Importación de Reportes KDP</h5>
+                                <p class="text-xs text-gray-400 mt-0.5">El sistema monitorea tu carpeta de <span class="text-cyan-300 font-semibold font-mono">Downloads</span>. Al descargar un reporte de regalías de KDP, se importará automáticamente. También puedes arrastrarlo a la zona de optimización.</p>
+                            </div>
+                        </div>
+                        <div id="kdp-report-status-badge" class="flex flex-wrap gap-2 text-xs items-center pl-2 lg:pl-0">
+                            <span class="px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center gap-1.5 font-semibold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                                Monitoreando descargas
+                            </span>
+                            <span id="kdp-report-file-info" class="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 font-semibold max-w-[250px] truncate" title="Ninguno cargado">
+                                Reporte: Ninguno cargado
+                            </span>
+                            <span id="kdp-report-metrics-info" class="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold hidden">
+                                0 libros
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse" id="kindle-table">
+                            <thead>
+                                <tr class="text-gray-400 text-xs font-semibold uppercase bg-white/[0.02] border-b border-glassBorder">
+                                    <th class="py-3 px-4">Libro (Título/ASIN)</th>
+                                    <th class="py-3 px-4 text-center">Formato</th>
+                                    <th class="py-3 px-4 text-center">Regalía %</th>
+                                    <th class="py-3 px-4 text-center">Precio</th>
+                                    <th class="py-3 px-4 text-center">Unidades</th>
+                                    <th class="py-3 px-4 text-center">Clics</th>
+                                    <th class="py-3 px-4 text-right">Inversión (Spend)</th>
+                                    <th class="py-3 px-4 text-right">Ventas Ads</th>
+                                    <th class="py-3 px-4 text-right">Regalías Est.</th>
+                                    <th class="py-3 px-4 text-center">ACOS Real</th>
+                                    <th class="py-3 px-4 text-center">ACOS Regalías (RACoS)</th>
+                                    <th class="py-3 px-4 text-center">ROAS</th>
+                                    <th class="py-3 px-4 text-right">Margen Neto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kindle-tbody" class="divide-y divide-glassBorder text-sm">
+                                <tr>
+                                    <td colspan="13" class="py-8 text-center text-gray-400">Cargando desglose de libros Kindle...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dual Workspace Layout -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                
+                <!-- Left Column: Inputs and Rules settings -->
+                <div class="space-y-6 lg:col-span-1">
+                    
+                    <!-- Seller Central Account Status & Metrics -->
+                    <div class="glass-card p-6 rounded-2xl space-y-5 relative">
+                        <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-rose-600"></div>
+                        <h4 class="font-outfit font-bold text-lg text-gray-200 flex items-center justify-between">
+                            <span class="flex items-center gap-2">
+                                <i data-lucide="store" class="w-5 h-5 text-amber-500"></i>
+                                Resumen de Seller Central
+                            </span>
+                            <span id="seller-account-status-badge" class="px-2.5 py-1 text-[10px] font-bold rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">⚠️ EN RIESGO</span>
+                        </h4>
+                        
+                        <!-- Alert Box -->
+                        <div class="p-3.5 bg-rose-500/5 border border-rose-500/15 rounded-xl text-xs text-gray-300 leading-relaxed flex gap-2.5 items-start">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5 animate-bounce"></i>
+                            <div>
+                                <span class="font-semibold text-rose-400 block mb-0.5">Acción Recomendada</span>
+                                Investigar el riesgo de salud de la cuenta. Un evento crítico requiere atención en Seller Central para evitar la desactivación.
+                            </div>
+                        </div>
+
+                        <!-- 2x2 Grid of Metrics -->
+                        <div class="grid grid-cols-2 gap-3 text-left">
+                            <div class="p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                                <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Saldo Total</span>
+                                <span id="seller-balance" class="font-outfit font-extrabold text-sm text-gray-200 block mt-1">$23,234.46 MXN</span>
+                            </div>
+                            <div class="p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                                <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Pedidos Pend.</span>
+                                <span id="seller-pending-orders" class="font-outfit font-extrabold text-sm text-gray-200 block mt-1">0</span>
+                            </div>
+                            <div class="p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                                <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Buy Box %</span>
+                                <span id="seller-buy-box" class="font-outfit font-extrabold text-sm text-emerald-400 block mt-1">100%</span>
+                            </div>
+                            <div class="p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                                <span class="text-[10px] text-gray-400 block font-semibold uppercase tracking-wider">Promociones (7d)</span>
+                                <span id="seller-promotions" class="font-outfit font-extrabold text-sm text-gray-200 block mt-1">$8,586.25 MXN</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optimization trigger controls (Upload and API) -->
+                    <div class="glass-card p-6 rounded-2xl space-y-5 relative">
+                        <h4 class="font-outfit font-bold text-lg text-gray-200 flex items-center gap-2">
+                            <i data-lucide="sliders-horizontal" class="w-5 h-5 text-cyan-400"></i>
+                            Optimizar Campañas
+                        </h4>
+                        
+                        <!-- Drag and Drop uploader -->
+                        <div id="drop-zone" class="border-2 border-dashed border-white/10 hover:border-cyan-400/50 rounded-2xl p-6 text-center transition-all duration-300 bg-white/[0.01] hover:bg-cyan-500/[0.02] cursor-pointer group">
+                            <input type="file" id="file-input" class="hidden" accept=".xlsx,.xls,.csv">
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="p-3 bg-white/5 rounded-full group-hover:scale-110 transition-all duration-300 border border-white/5 group-hover:border-cyan-500/20 group-hover:bg-cyan-950/20">
+                                    <i id="upload-icon" data-lucide="upload-cloud" class="w-6 h-6 text-gray-400 group-hover:text-cyan-400"></i>
+                                </div>
+                                <h5 id="upload-title" class="text-sm font-semibold text-gray-200">Subir Bulk Sheet o Search Terms</h5>
+                                <p id="upload-desc" class="text-xs text-gray-400">Arrastra tu reporte Excel o CSV, o haz clic aquí</p>
+                            </div>
+                        </div>
+
+                        <!-- Progress indicator (hidden by default) -->
+                        <div id="upload-progress-container" class="hidden space-y-2">
+                            <div class="flex justify-between text-xs font-semibold text-gray-300">
+                                <span id="upload-filename">opt_file.xlsx</span>
+                                <span id="upload-pct">0%</span>
+                            </div>
+                            <div class="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+                                <div id="upload-progress-bar" class="bg-cyan-400 h-full w-[0%] transition-all duration-200"></div>
+                            </div>
+                        </div>
+
+                        <div class="text-center text-xs text-gray-400 flex items-center justify-center gap-2">
+                            <span>O procesar de manera directa:</span>
+                        </div>
+
+                        <!-- API Sync Trigger -->
+                        <button id="api-optimize-btn" class="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white rounded-xl font-bold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-400/40 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-4 h-4 animate-spin-slow"></i>
+                            Ejecutar Optimización API
+                        </button>
+                    </div>
+
+                    <!-- Rules config sliders -->
+                    <div class="glass-card p-6 rounded-2xl space-y-6">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-outfit font-bold text-lg text-gray-200 flex items-center gap-2">
+                                <i data-lucide="shield-alert" class="w-5 h-5 text-orange-400"></i>
+                                Reglas del Motor
+                            </h4>
+                            <button id="save-rules-btn" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors uppercase tracking-wider">Guardar</button>
+                        </div>
+
+                        <!-- Slider item -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-semibold text-gray-300">
+                                <span>ACOS Objetivo (Target ACOS)</span>
+                                <span id="val-acos" class="text-cyan-400">30%</span>
+                            </div>
+                            <input type="range" id="input-acos" min="5" max="80" value="30" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+
+                        <!-- Slider item -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-semibold text-gray-300">
+                                <span>Límite de Gasto sin Ventas (MXN)</span>
+                                <span id="val-max-spend" class="text-cyan-400">$15.00 MXN</span>
+                            </div>
+                            <input type="range" id="input-max-spend" min="5" max="100" value="15" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+
+                        <!-- Slider item -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-semibold text-gray-300">
+                                <span>Límite de Clics sin Ventas</span>
+                                <span id="val-min-clicks" class="text-cyan-400">10 clics</span>
+                            </div>
+                            <input type="range" id="input-min-clicks" min="3" max="30" value="10" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+
+                        <!-- Slider item -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-semibold text-gray-300">
+                                <span>Factor de Suavizado (Bid Alpha)</span>
+                                <span id="val-smoothing" class="text-cyan-400">0.3</span>
+                            </div>
+                            <input type="range" id="input-smoothing" min="1" max="10" value="3" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Recommendations & Logs workspace -->
+                <div class="space-y-6 lg:col-span-2">
+                    
+                    <!-- Recommendations Table Card -->
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col min-h-[500px]">
+                        <!-- Tabs and actions bar -->
+                        <div class="p-5 border-b border-glassBorder flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/[0.01]">
+                            <div class="flex items-center gap-6">
+                                <button onclick="switchSuggestionsTab('pending')" id="tab-pending-btn" class="pb-1 text-sm font-bold border-b-2 border-cyan-400 text-gray-100 hover:text-white transition-all">Recomendaciones Pendientes</button>
+                                <button onclick="switchSuggestionsTab('history')" id="tab-history-btn" class="pb-1 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition-all">Historial de Optimización</button>
+                            </div>
+                            
+                            <!-- Bulk actions button -->
+                            <div id="table-action-container" class="flex gap-2">
+                                <span id="download-sheet-container" class="hidden">
+                                    <a id="download-sheet-btn" href="#" class="px-4 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                        Descargar Bulk Procesado
+                                    </a>
+                                </span>
+                                <button id="apply-selected-btn" class="px-4 py-2 bg-cyan-400 hover:bg-cyan-300 text-darkBg rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                    Aplicar recomendaciones seleccionadas
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recommendations Table Area -->
+                        <div class="flex-grow overflow-x-auto" id="table-wrapper">
+                            <table class="w-full text-left border-collapse" id="recommendations-table">
+                                <thead>
+                                    <tr class="text-gray-400 text-xs font-semibold uppercase bg-white/[0.02] border-b border-glassBorder">
+                                        <th class="py-4 px-5 w-12 text-center">
+                                            <input type="checkbox" id="select-all-checkbox" class="w-4 h-4 rounded accent-cyan-400 bg-black/20 border-white/10 cursor-pointer">
+                                        </th>
+                                        <th class="py-4 px-4">Campaña / Grupo</th>
+                                        <th class="py-4 px-4">Entidad</th>
+                                        <th class="py-4 px-4">Tipo</th>
+                                        <th class="py-4 px-4 text-center">Actual</th>
+                                        <th class="py-4 px-4 text-center">Propuesto</th>
+                                        <th class="py-4 px-4">Razonamiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recommendations-tbody" class="divide-y divide-glassBorder text-sm">
+                                    <!-- Rows populated dynamically -->
+                                    <tr id="table-empty-state">
+                                        <td colspan="7" class="py-20 text-center text-gray-400">
+                                            <div class="flex flex-col items-center gap-3">
+                                                <div class="p-4 bg-white/5 rounded-full text-gray-500 border border-white/5">
+                                                    <i data-lucide="inbox" class="w-8 h-8"></i>
+                                                </div>
+                                                <h5 class="text-sm font-semibold text-gray-300">No hay recomendaciones</h5>
+                                                <p class="text-xs max-w-sm">Ejecuta la optimización API o sube un archivo Excel de reportes para ver sugerencias aquí.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <!-- History Table (hidden by default) -->
+                            <table class="w-full text-left border-collapse hidden" id="history-table">
+                                <thead>
+                                    <tr class="text-gray-400 text-xs font-semibold uppercase bg-white/[0.02] border-b border-glassBorder">
+                                        <th class="py-4 px-5">Fecha</th>
+                                        <th class="py-4 px-4">Origen</th>
+                                        <th class="py-4 px-4 text-center">Bids Modificados</th>
+                                        <th class="py-4 px-4 text-center">Negativos Creados</th>
+                                        <th class="py-4 px-4 text-center">Presupuestos Redir.</th>
+                                        <th class="py-4 px-4">Detalles</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody" class="divide-y divide-glassBorder text-sm">
+                                    <!-- Populate dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Premium Footer -->
+        <footer class="mt-auto border-t border-glassBorder/60 py-6 px-6 bg-darkBg/90 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-gray-400 gap-4">
+                <p>&copy; 2026 Amazon Ads Optimization Engine (AAOE). Desarrollado para uso local.</p>
+                <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> SQLite DB Encriptada</span>
+                    <span class="text-gray-600">|</span>
+                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Amazon API Ready</span>
+                </div>
+            </div>
+        </footer>
+
+        <!-- SLIDE-IN CREDENTIALS DRAWER / MODAL -->
+        <div id="credentials-panel" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] transition-opacity duration-300 opacity-0 pointer-events-none flex justify-end">
+            <!-- Modal Box -->
+            <div id="credentials-box" class="w-full max-w-md bg-darkBg/95 border-l border-glassBorder h-full p-8 shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300">
+                <div class="space-y-6">
+                    <!-- Drawer Header -->
+                    <div class="flex justify-between items-center pb-4 border-b border-glassBorder">
+                        <div>
+                            <h4 class="font-outfit font-bold text-lg text-gray-200">Credenciales Amazon Ads</h4>
+                            <p class="text-xs text-gray-400">Configura LWA (Login with Amazon) para sincronizar en vivo</p>
+                        </div>
+                        <button onclick="toggleCredentialsPanel(false)" class="p-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <!-- Setup Form -->
+                    <form id="credentials-form" class="space-y-5">
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-gray-300 block">Región de Operación</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setRegion('na')" id="btn-reg-na" class="py-2.5 px-3 rounded-xl border border-cyan-400 bg-cyan-950/20 text-cyan-400 font-bold text-xs text-center transition-all">N. América</button>
+                                <button type="button" onclick="setRegion('eu')" id="btn-reg-eu" class="py-2.5 px-3 rounded-xl border border-white/5 bg-white/5 text-gray-400 font-bold text-xs text-center transition-all">Europa</button>
+                                <button type="button" onclick="setRegion('fe')" id="btn-reg-fe" class="py-2.5 px-3 rounded-xl border border-white/5 bg-white/5 text-gray-400 font-bold text-xs text-center transition-all">Extremo O.</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-300 block">LWA Client ID</label>
+                            <input type="password" id="input-client-id" placeholder="amzn1.application-oa2-client.xxxxx" class="w-full bg-glassBg border border-glassBorder px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:border-cyan-400 text-gray-200 font-mono">
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-300 block">LWA Client Secret</label>
+                            <input type="password" id="input-client-secret" placeholder="••••••••••••••••••••••••••••" class="w-full bg-glassBg border border-glassBorder px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:border-cyan-400 text-gray-200 font-mono">
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-300 block">LWA Refresh Token</label>
+                            <textarea id="input-refresh-token" placeholder="Atzr|xxxxx..." rows="3" class="w-full bg-glassBg border border-glassBorder px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:border-cyan-400 text-gray-200 font-mono text-xs"></textarea>
+                        </div>
+                    </form>
+                    
+                    <div id="auth-alert" class="hidden p-3 rounded-xl border text-xs"></div>
+                </div>
+
+                <div class="space-y-3 pt-6 border-t border-glassBorder">
+                    <button id="save-credentials-btn" class="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white rounded-xl font-bold text-sm shadow-md transition-all duration-300">
+                        Guardar & Verificar Conexión
+                    </button>
+                    <button onclick="toggleCredentialsPanel(false)" class="w-full py-3 px-4 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl font-bold text-sm transition-all border border-white/5">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App JS Core -->
+    <script src="/static/js/app.js?v=20260611"></script>
+</body>
+</html>
