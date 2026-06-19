@@ -516,9 +516,9 @@ async def run_search_terms_process(df: pd.DataFrame, filename: str, test_mode=Fa
         "ad_group_name": ["ad group name", "ad group", "nombre del grupo de anuncios", "grupo de anuncios"],
         "customer_search_term": ["customer search term", "customer search terms", "search term", "término de búsqueda de clientes", "término de búsqueda"],
         "clicks": ["clicks", "clics"],
-        "spend": ["spend", "gasto", "spent"],
-        "sales": ["7 day total sales", "sales", "ventas", "total sales"],
-        "orders": ["7 day total orders", "orders", "conversions", "pedidos", "conversiones", "units sold"]
+        "spend": ["spend", "gasto", "spent", "inversión", "inversion", "costo", "coste"],
+        "sales": ["7 day total sales", "sales", "ventas", "total sales", "ventas totales", "ventas totales de 7 días"],
+        "orders": ["7 day total orders", "orders", "conversions", "pedidos", "conversiones", "units sold", "pedidos totales", "pedidos totales de 7 días"]
     }
     
     resolved = fuzzy_find_columns(df, col_mappings)
@@ -620,7 +620,7 @@ async def run_search_terms_process(df: pd.DataFrame, filename: str, test_mode=Fa
 async def run_seller_report_process(df: pd.DataFrame, filename: str, test_mode=False):
     """Processes a Seller Central Business Report (by Child Item) and caches global metrics."""
     col_mappings = {
-        "sku": ["sku", "sku del producto", "seller sku", "vendedor sku"],
+        "sku": ["sku", "sku del producto", "seller sku", "vendedor sku", "asin (child)", "child asin", "asin", "asin (secundario)"],
         "sales": ["ordered product sales", "ventas de productos ordenados", "ventas de productos pedidos", "ventas de producto de pedidos", "ventas de productos", "ventas", "ventas totales"],
         "units": ["units ordered", "unidades ordenadas", "unidades pedidas", "unidades totales", "unidades", "unidades vendidas"],
         "asin": ["asin (secundario)", "child asin", "asin"],
